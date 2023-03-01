@@ -13,3 +13,4 @@ media volume --get
 media volume --set INDEX
 ```
 
+<img src="screenshot.png" alt="screenshot" width="300"/>
