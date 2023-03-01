@@ -81,8 +81,8 @@ public class ConnectionThread implements Runnable{
         AdbCrypto crypto;
         KeyPair keypair;
 
-        SharedPreferences mPrefs = getDefaultSharedPreferences(ref);
-        String keypair_str = mPrefs.getString("keypair", "");
+        SharedPreferences prefs = getDefaultSharedPreferences(ref);
+        String keypair_str = prefs.getString("keypair", "");
         if (keypair_str.equals("")) // no stored keys
         {
             Log.d("ConnectionThread", "generate KeyPair");
@@ -99,7 +99,7 @@ public class ConnectionThread implements Runnable{
                 oo.close();
                 bo.close();
 
-                SharedPreferences.Editor prefsEditor = mPrefs.edit();
+                SharedPreferences.Editor prefsEditor = prefs.edit();
                 prefsEditor.putString("keypair", keypair_str);
                 prefsEditor.apply();
 

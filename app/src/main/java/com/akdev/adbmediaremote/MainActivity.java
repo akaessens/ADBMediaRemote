@@ -1,7 +1,10 @@
 package com.akdev.adbmediaremote;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
@@ -29,6 +32,16 @@ public class MainActivity extends AppCompatActivity {
         final ImageButton image_button_conn = findViewById(R.id.image_button_conn);
 
         final SeekBar seekbar = findViewById(R.id.seekbar);
+
+        final EditText edit_text_host = findViewById(R.id.edit_text_host);
+        final EditText edit_text_port = findViewById(R.id.edit_text_port);
+
+        /* load host:port values */
+        SharedPreferences prefs = getDefaultSharedPreferences(MainActivity.this);
+        String host = prefs.getString("host", "192.168.1.232");
+        String port = prefs.getString("port", "5555");
+        edit_text_host.setText(host);
+        edit_text_port.setText(port);
 
         image_button_prev.setOnClickListener(v -> {
             Thread t = new Thread(new ConnectionThread(this,
@@ -83,10 +96,26 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekbar) {}
+            public void onStartTrackingTouch(SeekBar seekbar) {
+            }
 
             @Override
             public void onProgressChanged(SeekBar seekbar, int progress, boolean fromUser) {
+            }
+        });
+
+        edit_text_host.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                SharedPreferences.Editor prefsEditor = prefs.edit();
+                prefsEditor.putString("host", edit_text_host.getText().toString());
+                prefsEditor.apply();
+            }
+        });
+        edit_text_port.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                SharedPreferences.Editor prefsEditor = prefs.edit();
+                prefsEditor.putString("port", edit_text_port.getText().toString());
+                prefsEditor.apply();
             }
         });
     }
