@@ -4,6 +4,7 @@ import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.tananaev.adblib.AdbConnection;
 import com.tananaev.adblib.AdbCrypto;
@@ -14,7 +15,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -50,7 +53,10 @@ public class ConnectionThread implements Runnable{
         AdbCrypto crypto = getCrypto();
 
         try {
-            Socket socket = new Socket(this.host, this.port);
+            Socket socket = new Socket();
+            socket.connect(new InetSocketAddress(this.host, this.port), 1000);
+
+            Log.d("ConnectionThread", "hi");
 
             AdbConnection connection = AdbConnection.create(socket, crypto);
             connection.connect();
@@ -71,7 +77,11 @@ public class ConnectionThread implements Runnable{
 
             Log.d("ConnectionThread", "exit");
 
+        } catch (SocketTimeoutException e) {
+            ref.runOnUiThread(() -> Toast.makeText(ref.getApplicationContext(), "Timeout" , Toast.LENGTH_SHORT).show());
+            e.printStackTrace();
         } catch (IOException | InterruptedException e) {
+            ref.runOnUiThread(() -> Toast.makeText(ref.getApplicationContext(), "Exception" , Toast.LENGTH_SHORT).show());
             e.printStackTrace();
         }
     }

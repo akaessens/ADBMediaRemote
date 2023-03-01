@@ -23,6 +23,9 @@
                 android:id="@+id/edit_text_host"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:inputType="phone"
+                android:digits="0123456789."
                 android:hint="Host IP"/>
         </com.google.android.material.textfield.TextInputLayout>
 
