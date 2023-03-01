@@ -79,11 +79,6 @@ public class MainActivity extends AppCompatActivity {
                     "getprop ro.product.name",
                     getHost(), getPort(), this::connCb));
             t.start();
-
-            Thread t2 = new Thread(new ConnectionThread(this,
-                    "media volume --get | tail -n1",
-                    getHost(), getPort(), this::volCb));
-            t2.start();
         });
 
         seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -137,6 +132,11 @@ public class MainActivity extends AppCompatActivity {
         String text = "connected to\n" + response;
 
         runOnUiThread(() -> Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show());
+
+        Thread t = new Thread(new ConnectionThread(this,
+                "media volume --get | tail -n1",
+                getHost(), getPort(), this::volCb));
+        t.start();
     }
 
     void volCb(String response)
